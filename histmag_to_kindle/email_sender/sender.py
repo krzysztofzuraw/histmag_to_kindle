@@ -12,9 +12,7 @@ log.setLevel(logging.INFO)
 
 
 def config_file_check(func):
-    """
-    Decorator for checking if config file is present
-    """
+    """Decorator for checking if config file is present."""
     def checker(*args, **kwargs):
         log.debug('Checking if config file exists')
         config_file_path = os.path.join(os.path.expanduser('~'), '.histmag_parser_conf')
@@ -33,8 +31,14 @@ def config_file_check(func):
 
 @config_file_check
 def send_email_to_kindle(kindle_email, name='histmag.mobi', **kwargs):
-    """
-    Sending html_article to kindle_email using mailgun api. You need to have histmag_conf properly configured first.
+    """Sending html_article to kindle_email using mailgun api.
+
+    Basic Usage::
+
+    >>>from histmag_to_kindle import send_email_to_kindle
+    >>>send_email_to_kindle(kindle_email='your_kindle_email', name=html)
+    <Response [200]>
+
     :param kindle_email: your kindle email
     :param name: path to file to send
     :return: response

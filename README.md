@@ -22,6 +22,7 @@ $ cat ~/.histmag_conf
 ```
 >[sender]
 >api_key = YOUR_MAILGUN_API_KEY
+>
 >server = YOUR_MAIL_SERVER
 
 After this make sure that you add mailgun email to kindle trusted emails:
@@ -32,10 +33,7 @@ Usage
 -----
 
 ```python
-from histmag_parser.parser import Parser
-from html_generator.generator import HtmlGenerator
-from email_sender.sender import send_email_to_kindle
-
+from histmag_to_kindle import Parser, HtmlGenerator, send_email_to_kindle
 
 parser = Parser(http link to desired article)
 articles = parser.get_articles()

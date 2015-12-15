@@ -12,18 +12,27 @@ log.setLevel(logging.INFO)
 
 
 class HtmlGenerator(object):
-    """Class for generating htmls from list of articles"""
+    """Class for generating htmls from list of articles
+
+    Basic usage::
+
+    >>>from histmag_to_kindle import HtmlGenerator
+    >>>generator = HtmlGenerator(['list_of_articles'])
+    >>>generator.generate()
+    'abs_path/to/generated_html'
+    """
     def __init__(self, page):
         """
-        :param page: instance of Page object from parser
+        :param page: instance of :class:`histmag_to_kindle.histmag_parser.Page` object from parser
         """
         self.page = page
 
     def generate(self, html_path='histmag_article'):
-        """
-        Generate html
+        """Generate html.
+
         :param html_path: path where to save generated html
-        :return:
+        :return: absolute path to generated html
+        :rtype: string
         """
         html_article = dominate.document(title=self.page[0].title)
 

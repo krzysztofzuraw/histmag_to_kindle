@@ -12,21 +12,28 @@ log.setLevel(logging.INFO)
 
 
 class Parser(object):
-    """Histmag.org article parser.
-       It parses many pages to one for better reading in Kindle"""
+    """Histmag.org articles parser.
+
+    Basic Usage::
+
+    >>> from histmag_to_kindle import Parser
+    >>> parser = Parser('http_link_to_desired_article')
+    >>> articles = parser.get_articles()
+    [Page with http_link_to_desired_article url, ...]
+    """
     def __init__(self, addr):
         """
         :param addr: url address.
-        :type addr: str.
+        :type addr: string.
         """
         self.addr = addr
         self.xpath_root = '//div[@id="article"]'
         self.session = requests.Session()
 
     def get_articles(self):
-        """Gets full article with subpages for given address.
+        """Gets full article with subpages for `self.addr`.
 
-        :return: all subpages
+        :return: all subpages in form of :class:`Page`
         :rtype: list
         """
         urls_queue = deque([self.addr])
@@ -50,13 +57,11 @@ class Parser(object):
         """Get first link that contains given word.
 
         :param url: webpage address with 'http://'.
-        :type url: str.
+        :type url: string.
         :param word: word that is in <a> tag.
-        :type word: str.
-        :param prefix: string needed when url on the page is relative.
-        :type prefix: str.
+        :type word: string.
         :return: link with full path.
-        ":rtype: str.
+        ":rtype: string.
         """
         response = requests.get(url)
         parsed_page = html.fromstring(response.content)
@@ -71,9 +76,9 @@ class Parser(object):
         """Get author, tags, date and text from page.
 
         :param url: webpage address with 'http://'.
-        :type url: str.
+        :type url: string.
         :return: Page object with author, tags, date and text.
-        :rtype: object.
+        :rtype: :class:`Page`
         """
         log.debug('Started parsing page with url: {url}'.format(url=url))
         response = requests.get(url)
@@ -82,14 +87,15 @@ class Parser(object):
         author_xpath = self.xpath_root + '//a[contains(@href, "author")]//text()'
         tags_xpath = self.xpath_root + '//p[contains(@class, "article-tags")]//a//text()'
         date_xpath = self.xpath_root + '//p[contains(@class, "article-info")]/text()'
-        text_xpath = self.xpath_root + '/child::p/text() | //div[@id="article"]/p[3]/strong/text()'
+        text_xpath = self.xpath_root + '/child::p[not(contains(@class, "article-tags")) ' \
+                                       'and not(contains(@class, "article-info"))]/text()'
+        
 
         return Page(addr=url, title=parsed_page.xpath(title_xpath),
                     authors=parsed_page.xpath(author_xpath),
                     tags=parsed_page.xpath(tags_xpath),
                     date=parsed_page.xpath(date_xpath),
-                    #TODO: rework how this is done
-                    text=parsed_page.xpath(text_xpath)[5:])
+                    text=parsed_page.xpath(text_xpath))
 
 
 class Page(object):
@@ -103,9 +109,9 @@ class Page(object):
         :param tags: page tags.
         :type tags: list.
         :param date: article creation date in format YYYY-MM-DD HH:MM.
-        :type date: str.
+        :type date: string.
         :param text: article text.
-        :type text: str.
+        :type text: string.
         """
         self.addr = addr
         self.title = title

@@ -37,4 +37,4 @@ def test_parser_parse_page(page_1):
     assert parsed_page.date == [page_1.date]
     assert parsed_page.tags == page_1.tags
     assert parsed_page.title == [page_1.title]
-    assert parsed_page.text[0] == page_1.text
+    assert parsed_page.text[1] == page_1.text

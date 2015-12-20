@@ -1,4 +1,5 @@
 import logging
+import os
 from collections import deque
 from lxml import html
 import requests
@@ -89,18 +90,27 @@ class Parser(object):
         date_xpath = self.xpath_root + '//p[contains(@class, "article-info")]/text()'
         text_xpath = self.xpath_root + '/child::p[not(contains(@class, "article-tags")) ' \
                                        'and not(contains(@class, "article-info"))]/text()'
-        
-
         return Page(addr=url, title=parsed_page.xpath(title_xpath),
                     authors=parsed_page.xpath(author_xpath),
                     tags=parsed_page.xpath(tags_xpath),
                     date=parsed_page.xpath(date_xpath),
+                    images=self.extract_images(page=parsed_page),
                     text=parsed_page.xpath(text_xpath))
+
+    def extract_images(self, page):
+        image_xpath = self.xpath_root + '/child::p/span/a/img'
+        image_paths = []
+        for url in page.xpath(image_xpath):
+            with open(os.path.basename(url.attrib['src']), 'wb') as jpg:
+                data = self.session.get(url.attrib['src']).content
+                jpg.write(data)
+                image_paths.append(os.path.basename(url.attrib['src']))
+        return image_paths
 
 
 class Page(object):
     """Class representing one page of article"""
-    def __init__(self, addr, title=None, authors=None, tags=None, date=None, text=None):
+    def __init__(self, addr, title=None, authors=None, tags=None, date=None, text=None, images=None):
         """
         :param addr: url address.
         :type addr: str.
@@ -112,6 +122,8 @@ class Page(object):
         :type date: string.
         :param text: article text.
         :type text: string.
+        :param images: page images with full paths
+        :type images: list
         """
         self.addr = addr
         self.title = title
@@ -119,6 +131,7 @@ class Page(object):
         self.tags = tags
         self.date = date
         self.text = text
+        self.images = images
 
     def __repr__(self):
         return "Page with {} url".format(self.addr)

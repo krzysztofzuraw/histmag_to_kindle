@@ -1,5 +1,5 @@
 import pytest
-
+import os
 from histmag_to_kindle.histmag_parser import Page
 
 
@@ -10,6 +10,7 @@ def page_1():
                 title='Zażółć gęślą jaźń',
                 date='2015-06-23 19:45',
                 tags=['historia', 'dummy tag'],
+                images=[os.path.join(os.path.dirname(os.path.realpath(__file__)), 'text.png')],
                 text='Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
 
 

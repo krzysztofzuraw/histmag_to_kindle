@@ -98,13 +98,14 @@ class Parser(object):
                     text=parsed_page.xpath(text_xpath))
 
     def extract_images(self, page):
-        image_xpath = self.xpath_root + '/child::p/span/a/img'
+        image_xpath = self.xpath_root + '/child::p/span/a/img/@src'
+        # //div[@id="article"]/child::p//text() | //div[@id="article"]/child::p/span/a/img/@src
         image_paths = []
         for url in page.xpath(image_xpath):
-            with open(os.path.basename(url.attrib['src']), 'wb') as jpg:
-                data = self.session.get(url.attrib['src']).content
+            with open(os.path.basename(url), 'wb') as jpg:
+                data = self.session.get(url).content
                 jpg.write(data)
-                image_paths.append(os.path.basename(url.attrib['src']))
+                image_paths.append(os.path.basename(url))
         return image_paths
 
 

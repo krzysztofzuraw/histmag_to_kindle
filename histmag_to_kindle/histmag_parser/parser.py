@@ -84,22 +84,16 @@ class Parser(object):
         log.debug('Started parsing page with url: {url}'.format(url=url))
         response = requests.get(url)
         parsed_page = html.fromstring(response.content)
-        title_xpath = self.xpath_root + '/h2/text()'
-        author_xpath = self.xpath_root + '//a[contains(@href, "author")]//text()'
-        tags_xpath = self.xpath_root + '//p[contains(@class, "article-tags")]//a//text()'
-        date_xpath = self.xpath_root + '//p[contains(@class, "article-info")]/text()'
-        text_xpath = self.xpath_root + '/child::p[not(contains(@class, "article-tags")) ' \
-                                       'and not(contains(@class, "article-info"))]/text()'
-        return Page(addr=url, title=parsed_page.xpath(title_xpath),
-                    authors=parsed_page.xpath(author_xpath),
-                    tags=parsed_page.xpath(tags_xpath),
-                    date=parsed_page.xpath(date_xpath),
-                    images=self.extract_images(page=parsed_page),
-                    text=parsed_page.xpath(text_xpath))
+        info = []
+        for elem in parsed_page.xpath('{root}//child::p | {root}//em | {root}//img'.format(root=self.xpath_root)):
+            if elem.tag == 'img':
+                info.append((elem.tag, elem.attrib['src']))
+            else:
+                info.append((elem.tag, elem.text))
+
 
     def extract_images(self, page):
         image_xpath = self.xpath_root + '/child::p/span/a/img/@src'
-        # //div[@id="article"]/child::p//text() | //div[@id="article"]/child::p/span/a/img/@src
         image_paths = []
         for url in page.xpath(image_xpath):
             with open(os.path.basename(url), 'wb') as jpg:

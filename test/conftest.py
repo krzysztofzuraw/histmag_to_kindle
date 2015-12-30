@@ -6,12 +6,14 @@ from histmag_to_kindle.histmag_parser import Page
 @pytest.fixture
 def page_1():
     return Page(addr='http://mock_url',
-                authors=['Etiam aliquam'],
-                title='Zażółć gęślą jaźń',
-                date='2015-06-23 19:45',
-                tags=['historia', 'dummy tag'],
-                images=[os.path.join(os.path.dirname(os.path.realpath(__file__)), 'text.png')],
-                text='Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+                contents=[('p', 'Zażółć gęślą jaźń'),
+                          ('a', 'Etiam aliquam'),
+                          ('p', None),
+                          ('p', None),
+                          ('p', None),
+                          ('img', 'http://placehold.it/350x150'),
+                          ('p', 'placeholder'),
+                          ('p', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')])
 
 
 @pytest.fixture

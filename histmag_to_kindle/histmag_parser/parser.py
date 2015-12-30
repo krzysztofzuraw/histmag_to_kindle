@@ -74,59 +74,40 @@ class Parser(object):
             return None
 
     def parse_page(self, url):
-        """Get author, tags, date and text from page.
+        """Parse page and retrive its contents
 
         :param url: webpage address with 'http://'.
         :type url: string.
-        :return: Page object with author, tags, date and text.
+        :return: Page object with addr and contents
         :rtype: :class:`Page`
         """
         log.debug('Started parsing page with url: {url}'.format(url=url))
         response = requests.get(url)
         parsed_page = html.fromstring(response.content)
         info = []
-        for elem in parsed_page.xpath('{root}//child::p | {root}//em | {root}//img'.format(root=self.xpath_root)):
+        for elem in parsed_page.xpath('{root}//child::p[not(contains(@class, "article-tags")) '
+                                      'and not(contains(@class, "article-info"))] '
+                                      '| {root}//a[contains(@href, "author")]'
+                                      '| {root}//em '
+                                      '| {root}//img'.format(root=self.xpath_root)):
             if elem.tag == 'img':
                 info.append((elem.tag, elem.attrib['src']))
             else:
                 info.append((elem.tag, elem.text))
-
-
-    def extract_images(self, page):
-        image_xpath = self.xpath_root + '/child::p/span/a/img/@src'
-        image_paths = []
-        for url in page.xpath(image_xpath):
-            with open(os.path.basename(url), 'wb') as jpg:
-                data = self.session.get(url).content
-                jpg.write(data)
-                image_paths.append(os.path.basename(url))
-        return image_paths
+        return Page(url, contents=info)
 
 
 class Page(object):
     """Class representing one page of article"""
-    def __init__(self, addr, title=None, authors=None, tags=None, date=None, text=None, images=None):
+    def __init__(self, addr, contents=None):
         """
         :param addr: url address.
         :type addr: str.
-        :param authors: page authors
-        :type authors: list.
-        :param tags: page tags.
-        :type tags: list.
-        :param date: article creation date in format YYYY-MM-DD HH:MM.
-        :type date: string.
-        :param text: article text.
-        :type text: string.
-        :param images: page images with full paths
-        :type images: list
+        :param contents: contents of webpage with tags e.g [('p','paragraph', 'img','img_src'), ...].
+        :type contents: list.
         """
         self.addr = addr
-        self.title = title
-        self.author = authors
-        self.tags = tags
-        self.date = date
-        self.text = text
-        self.images = images
+        self.contents = contents
 
     def __repr__(self):
         return "Page with {} url".format(self.addr)

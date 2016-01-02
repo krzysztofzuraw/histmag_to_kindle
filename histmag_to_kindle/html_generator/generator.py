@@ -1,7 +1,10 @@
 import os
 import logging
-import dominate
-from dominate.tags import *
+
+from py.xml import html
+
+# import dominate
+# from dominate.tags import *
 
 log = logging.getLogger()
 handler = logging.StreamHandler()
@@ -21,6 +24,7 @@ class HtmlGenerator(object):
     >>>generator.generate()
     'abs_path/to/generated_html'
     """
+
     def __init__(self, page):
         """
         :param page: instance of :class:`histmag_to_kindle.histmag_parser.Page` object from parser
@@ -55,3 +59,31 @@ class HtmlGenerator(object):
             his.write(str(html_article))
         log.info('Html generated with path: {path}'.format(path=os.path.abspath(his.name)))
         return os.path.abspath(his.name)
+
+
+def generate_html(pages, output=None):
+    doc = html.html(
+        html.head(
+            get_tile(html, pages),
+            html.meta(content="text/html; charset=utf-8", http_equiv="Content-Type")
+        ),
+        html.body(
+          generate_body(html, pages)
+        )
+
+    )
+    if output is None:
+        output = os.path.join(os.getcwd(), 'histmag.html')
+    with open(output, 'wb') as out_file:
+        out_file.write(doc.unicode(indent=2).encode('utf8'))
+
+
+def get_tile(html, pages):
+    for page in pages:
+        title = page.contents[0].value
+        tag = page.contents[0].tag
+    return html.title(getattr(html, tag)(title))
+
+
+def generate_body(html, pages):
+    pass

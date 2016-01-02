@@ -1,6 +1,6 @@
 import logging
 import os
-from collections import deque
+from collections import deque, namedtuple
 from lxml import html
 import requests
 
@@ -85,15 +85,16 @@ class Parser(object):
         response = requests.get(url)
         parsed_page = html.fromstring(response.content)
         info = []
+        Element = namedtuple('Elements', ['tag', 'value'])
         for elem in parsed_page.xpath('{root}//child::p[not(contains(@class, "article-tags")) '
                                       'and not(contains(@class, "article-info"))] '
                                       '| {root}//a[contains(@href, "author")]'
                                       '| {root}//em '
                                       '| {root}//img'.format(root=self.xpath_root)):
             if elem.tag == 'img':
-                info.append((elem.tag, elem.attrib['src']))
+                info.append(Element(elem.tag, elem.attrib['src']))
             else:
-                info.append((elem.tag, elem.text))
+                info.append(Element(elem.tag, elem.text))
         return Page(url, contents=info)
 
 

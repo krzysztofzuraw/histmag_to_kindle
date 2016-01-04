@@ -65,7 +65,7 @@ def generate_html(pages, output=None):
     doc = html.html(
         html.head(
             get_tile(html, pages),
-            html.meta(content="text/html; charset=utf-8", http_equiv="Content-Type")
+            html.meta(content="text/html; charset=utf-8", http_equiv="Content-Type")  # Why this is not changed to http-equiv
         ),
         html.body(
           generate_body(html, pages)
@@ -86,4 +86,8 @@ def get_tile(html, pages):
 
 
 def generate_body(html, pages):
-    pass
+    list_of_bodies = []
+    for page in pages:
+        for content in page.contents:
+            list_of_bodies.append(getattr(html, content.tag)(content.value))
+    return list_of_bodies

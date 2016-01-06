@@ -2,7 +2,7 @@ import os
 
 from lxml import html
 
-from histmag_to_kindle.html_generator.generator import HtmlGenerator, generate_html
+from histmag_to_kindle.html_generator.generator import generate_html
 
 RESULT = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                       'data/websites/article.html')

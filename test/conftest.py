@@ -16,9 +16,9 @@ def page_1(fake_element_namedtuple):
     return Page(addr='http://mock_url',
                 contents=[fake_element_namedtuple(('p', 'Zażółć gęślą jaźń')),
                           fake_element_namedtuple(('a', 'Etiam aliquam')),
-                          fake_element_namedtuple(('p', None)),
-                          fake_element_namedtuple(('p', None)),
-                          fake_element_namedtuple(('p', None)),
+                          fake_element_namedtuple(('p', '')),
+                          fake_element_namedtuple(('p', '')),
+                          fake_element_namedtuple(('p', '')),
                           fake_element_namedtuple(('img', 'http://placehold.it/350x150')),
                           fake_element_namedtuple(('p', 'placeholder')),
                           fake_element_namedtuple(('p', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'))])
@@ -29,7 +29,7 @@ def page_2(fake_element_namedtuple):
     return Page(addr='http://mock_url',
                 contents=[fake_element_namedtuple(('p', 'Zażółć gęślą jaźń')),
                           fake_element_namedtuple(('a', 'Etiam aliquam')),
-                          fake_element_namedtuple(('p', None)),
-                          fake_element_namedtuple(('p', None)),
-                          fake_element_namedtuple(('p', None)),
-                          fake_element_namedtuple(('p', 'Zażółć gęślą jaźń'))])
+                          fake_element_namedtuple(('p', '')),
+                          fake_element_namedtuple(('p', '')),
+                          fake_element_namedtuple(('p', '')),
+                          fake_element_namedtuple(('p', 'Another place'))])

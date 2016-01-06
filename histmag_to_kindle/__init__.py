@@ -1,7 +1,7 @@
 import logging
 
 from .histmag_parser import Parser
-from .html_generator import HtmlGenerator
+from .html_generator import generate_html
 from .email_sender import send_email_to_kindle
 
 try:

@@ -1,1 +1,1 @@
-from .generator import HtmlGenerator
+from .generator import generate_html

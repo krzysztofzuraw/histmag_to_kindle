@@ -94,7 +94,7 @@ class Parser(object):
             if elem.tag == 'img':
                 info.append(Element(elem.tag, elem.attrib['src']))
             else:
-                info.append(Element(elem.tag, elem.text))
+                info.append(Element(elem.tag, elem.text or ''))
         return Page(url, contents=info)
 
 

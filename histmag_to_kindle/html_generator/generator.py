@@ -64,9 +64,9 @@ log.setLevel(logging.INFO)
 def generate_html(pages, output=None):
     doc = html.html(
             html.head(
-                    get_tile(html, pages),
-                    html.meta(content="text/html; charset=utf-8", **{"http-equiv": "Content-Type"})
+                    html.meta(content="text/html; charset=utf-8", **{"http-equiv": "Content-Type"}),
                     # workaround to that python don't allow keyword args with hypens
+                    get_tile(html, pages)
             ),
             html.body(
                     html.div(generate_body(html, pages), id='article')

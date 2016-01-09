@@ -95,7 +95,13 @@ class Parser(object):
                 info.append(Element(elem.tag, elem.attrib['src']))
             else:
                 info.append(Element(elem.tag, elem.text or ''))
-        return Page(url, contents=info)
+        return Page(url, contents=self.filter_info(info))
+
+    def filter_info(self, info):
+        for elem in info:
+            if elem.value.startswith('/'):
+                info.remove(elem)
+        return info
 
 
 class Page(object):

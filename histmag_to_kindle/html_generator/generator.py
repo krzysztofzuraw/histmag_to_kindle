@@ -14,12 +14,19 @@ log.addHandler(handler)
 log.setLevel(logging.INFO)
 
 
-def generate_mobi(pages, output=None):
+class GenerateMobiError(Exception):
+    pass
+
+
+def generate_mobi(pages, output='histmag.html'):
     html_dir_path = generate_html(pages)
-    if output is None:
-        output = os.path.join(os.getcwd(), 'histmag.html')
-    with open(output, 'wb') as out_file:
-        pass
+    proc = subprocess.Popen(['bin/kindlegen', os.path.join(html_dir_path, 'histmag.html'), '-o', output],
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    stdout = proc.communicate()[0].decode()
+    for line in stdout.split('\n'):
+        if line.startswith('Error'):
+            raise GenerateMobiError(line)
+    return html_dir_path
 
 
 def generate_html(pages):
@@ -27,8 +34,7 @@ def generate_html(pages):
 
     doc = html.html(
             html.head(
-                    html.meta(content="text/html; charset=utf-8", **{"http-equiv": "Content-Type"}),
-                    # workaround to that python don't allow keyword args with hypens
+                    html.meta(content="text/html; charset=utf-8", **{"http-equiv": "Content-Type"}),  # workaround to that python don't allow keyword args with hypens
                     get_tile(html, pages)
             ),
             html.body(

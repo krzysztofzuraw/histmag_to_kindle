@@ -90,11 +90,15 @@ class Parser(object):
                                       'and not(contains(@class, "article-info"))] '
                                       '| {root}//a[contains(@href, "author")]'
                                       '| {root}//em '
-                                      '| {root}//img'.format(root=self.xpath_root)):
+                                      '| {root}//img '
+                                      '| {root}//span'.format(root=self.xpath_root)):
             if elem.tag == 'img':
                 info.append(Element(elem.tag, elem.attrib['src']))
+            elif elem.tag == 'span':
+                info.append(Element(elem.tag, elem.text_content() or ''))
             else:
                 info.append(Element(elem.tag, elem.text or ''))
+
         return Page(url, contents=self.filter_info(info))
 
     def filter_info(self, info):

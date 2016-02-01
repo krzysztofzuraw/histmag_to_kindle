@@ -18,10 +18,16 @@ class GenerateMobiError(Exception):
     pass
 
 
-def generate_mobi(pages, output='histmag.html'):
+def generate_mobi(pages, output='histmag.mobi'):
     html_dir_path = generate_html(pages)
-    proc = subprocess.Popen(['bin/kindlegen', os.path.join(html_dir_path, 'histmag.html'), '-o', output],
-                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    proc = subprocess.Popen([
+        'bin/kindlegen',
+        os.path.join(html_dir_path, 'histmag.html'),
+        '-o',
+        output
+    ],
+    stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    
     stdout = proc.communicate()[0].decode()
     for line in stdout.split('\n'):
         if line.startswith('Error'):
@@ -33,14 +39,14 @@ def generate_html(pages):
     tempdir = tempfile.mkdtemp()
 
     doc = html.html(
-            html.head(
-                    html.meta(content="text/html; charset=utf-8", **{"http-equiv": "Content-Type"}),  # workaround to that python don't allow keyword args with hypens
-                    get_tile(html, pages)
-            ),
-            html.body(
-                    html.div(generate_body(html, pages, tempdir), id='article'),
-            )
-
+        html.head(
+            # python don't allow keyword args with hypens
+            html.meta(content="text/html; charset=utf-8", **{"http-equiv": "Content-Type"}),
+            get_tile(html, pages)
+        ),
+        html.body(
+            html.div(generate_body(html, pages, tempdir), id='article'),
+        )
     )
 
     with open(os.path.join(tempdir, 'histmag.html'), 'wb') as out_file:

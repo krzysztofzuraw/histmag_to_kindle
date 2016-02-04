@@ -7,7 +7,6 @@ setup(
     license='MIT',
     author='Krzysztof Żuraw',
     author_email='krzysztof.zuraw@gmail.com',
-    long_description=open('README.md').read(),
     install_requires=[
         'lxml',
         'dominate',

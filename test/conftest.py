@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytest
 import collections
 from histmag_to_kindle.histmag_parser import Page

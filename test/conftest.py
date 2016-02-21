@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
+"""Test setup module."""
 import pytest
 import collections
-from histmag_to_kindle.histmag_parser import Page
+
+from histmag_to_kindle.parser import Page
 
 
 @pytest.fixture()
 def fake_element_namedtuple():
+    """Helper function for marking `Element` tuple."""
     def make(tuple_to_fake):
         Element = collections.namedtuple('Elements', ['tag', 'value'])
         return Element(tag=tuple_to_fake[0], value=tuple_to_fake[1])
@@ -14,6 +17,7 @@ def fake_element_namedtuple():
 
 @pytest.fixture
 def page_1(fake_element_namedtuple):
+    """Faked page."""
     return Page(
         addr='http://mock_url',
         contents=[
@@ -32,6 +36,7 @@ def page_1(fake_element_namedtuple):
 
 @pytest.fixture
 def page_2(fake_element_namedtuple):
+    """Second faked page."""
     return Page(addr='http://mock_url',
                 contents=[fake_element_namedtuple(('p', 'Zażółć gęślą jaźń')),
                           fake_element_namedtuple(('a', 'Etiam aliquam')),

@@ -1,14 +1,10 @@
+"""Histmag to kindle main module."""
 import logging
 
-from .histmag_parser import Parser
-from .html_generator import generate_html
-from .email_sender import send_email_to_kindle
 
-try:
-    from logging import NullHandler
-except ImportError:
-    class NullHandler(logging.Handler):
-        def emit(self, record):
-            pass
+logging.basicConfig()
+logger = logging.getLogger(__name__)
 
-logging.getLogger(__name__).addHandler(NullHandler())
+from .sender import send_email_to_kindle # flake8: noqa
+from .generator import generate_mobi # flake8: noqa
+from .parser import Parser # flake8: noqa

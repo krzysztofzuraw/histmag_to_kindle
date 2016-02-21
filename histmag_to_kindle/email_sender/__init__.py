@@ -1,1 +1,0 @@
-from .sender import send_email_to_kindle

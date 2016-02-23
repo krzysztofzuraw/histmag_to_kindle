@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Tests for html generator."""
 import os
 import tempfile

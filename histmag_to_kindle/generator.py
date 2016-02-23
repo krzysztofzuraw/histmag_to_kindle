@@ -7,15 +7,10 @@ import requests
 from py.xml import html
 
 from histmag_to_kindle import logger
+from histmag_to_kindle.exceptions import ImproperlyConfigured, GenerateMobiError
 
 
-class GenerateMobiError(Exception):
-    """Exception wrapper around kindlegen binary."""
-
-    pass
-
-
-def generate_mobi(pages, output='histmag.mobi'):
+def generate_mobi(pages, output='histmag.mobi'):  # pragma: no cover
     """Generate mobi file using kindlegen binary from histmag_to_kindle/bin/kindlegen.
 
     Basic Usage::
@@ -31,10 +26,12 @@ def generate_mobi(pages, output='histmag.mobi'):
     :return: path to directory with generated html.
     :rtype: string.
     """
+    if not os.environ.get('KINDLEGEN'):
+        raise ImproperlyConfigured('No kindlegen library in env variables.')
     html_dir_path = _generate_html(pages)
     proc = subprocess.Popen(
         [
-            'bin/kindlegen',
+            os.environ.get('KINDLEGEN'),
             os.path.join(html_dir_path, 'histmag.html'),
             '-o',
             output

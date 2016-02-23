@@ -1,32 +1,13 @@
 """Email sender module."""
-import configparser
 import os
 
 import requests
 
 from histmag_to_kindle import logger
+from histmag_to_kindle.exceptions import ImproperlyConfigured
 
 
-def config_file_check(func):
-    """Decorator for checking if config file is present."""
-    def checker(*args, **kwargs):
-        logger.debug('Checking if config file exists')
-        config_file_path = os.path.join(os.path.expanduser('~'), '.histmag_parser_conf')
-        if os.path.isfile(config_file_path):
-            config = configparser.ConfigParser()
-            config.read(config_file_path)
-            kwargs['api_key'] = config.get('sender', 'api_key')
-            kwargs['server'] = config.get('sender', 'server')
-
-            return func(*args, **kwargs)
-        else:
-            raise FileNotFoundError('No such file {path}'.format(path=config_file_path))
-
-    return checker
-
-
-@config_file_check
-def send_email_to_kindle(kindle_email, name='histmag.mobi', **kwargs):
+def send_email_to_kindle(kindle_email, name='histmag.mobi'):
     """Sending html_article to kindle_email using mailgun api.
 
     Basic Usage::
@@ -39,8 +20,10 @@ def send_email_to_kindle(kindle_email, name='histmag.mobi', **kwargs):
     :param name: path to file to send
     :return: response
     """
-    api_key = kwargs.pop('api_key')
-    server = kwargs.pop('server')
+    if not os.environ.get('MAILGUN_API_KEY') or not os.environ.get('EMAIL_SERVER'):
+        raise ImproperlyConfigured('Either MAILGUN_API_KEY or EMAIL_SERVER variable not found in enviroment variables.')
+    api_key = os.environ.get('MAILGUN_API_KEY')
+    server = os.environ.get('EMAIL_SERVER')
     logger.debug('Sending html_article to {email}'.format(email=kindle_email))
     return requests.post("https://api.mailgun.net/v3/{server}/messages".format(server=server),
                          auth=("api", api_key),

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Histmag to kindle website crawler and parser."""
 from collections import deque, namedtuple
 
@@ -96,18 +97,7 @@ class Parser(object):
             else:
                 page_contents.append(Element(elem.tag, elem.text or ''))
 
-        return Page(url, contents=self.filter_page_contents(page_contents))
-
-    def filter_page_contents(self, page_contents):
-        """Filter out real contents from parsed html.
-
-        :param list page_contents: contents of parsed page.
-        :return list: filtered page_contents.
-        """
-        for elem in page_contents:
-            if elem.value.startswith('/'):
-                page_contents.remove(elem)
-        return page_contents
+        return Page(url, contents=page_contents)
 
 
 class Page(object):
@@ -124,6 +114,6 @@ class Page(object):
         self.addr = addr
         self.contents = contents
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         """Page representation."""
         return "Page with {} url".format(self.addr)
